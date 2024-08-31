@@ -5,6 +5,7 @@ package oauthgitlab
 
 import (
 	"encoding/json"
+	"encoding/binary"
 	"errors"
 	"io"
 	"strconv"
@@ -20,9 +21,9 @@ type GitLabProvider struct {
 }
 
 type GitLabUser struct {
-	Id       int64  `json:"id"`
-	Username string `json:"username"`
-	Login    string `json:"login"`
+	Id       string `json:"sub"`
+	Username string `json:"nick"`
+	Login    string `json:"preferred_username"`
 	Email    string `json:"email"`
 	Name     string `json:"name"`
 }
@@ -40,6 +41,7 @@ func userFromGitLabUser(logger mlog.LoggerIFace, glu *GitLabUser) *model.User {
 	}
 	user.Username = model.CleanUsername(logger, username)
 	splitName := strings.Split(glu.Name, " ")
+
 	if len(splitName) == 2 {
 		user.FirstName = splitName[0]
 		user.LastName = splitName[1]
@@ -69,9 +71,9 @@ func gitLabUserFromJSON(data io.Reader) (*GitLabUser, error) {
 }
 
 func (glu *GitLabUser) IsValid() error {
-	if glu.Id == 0 {
-		return errors.New("user id can't be 0")
-	}
+//	if glu.Id == 0 {
+//		return errors.New("user id can't be 0")
+//	}
 
 	if glu.Email == "" {
 		return errors.New("user e-mail should not be empty")
@@ -81,7 +83,7 @@ func (glu *GitLabUser) IsValid() error {
 }
 
 func (glu *GitLabUser) getAuthData() string {
-	return strconv.FormatInt(glu.Id, 10)
+	return strconv.FormatInt(int64(binary.BigEndian.Uint64([]byte(glu.Id[0:8]))), 10)
 }
 
 func (gp *GitLabProvider) GetUserFromJSON(c request.CTX, data io.Reader, tokenUser *model.User) (*model.User, error) {

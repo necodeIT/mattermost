@@ -780,14 +780,18 @@ func (a *App) GetAuthorizationCode(c request.CTX, w http.ResponseWriter, r *http
 	props["token"] = stateToken.Token
 	state := b64.StdEncoding.EncodeToString([]byte(model.MapToJSON(props)))
 
-	siteURL := a.GetSiteURL()
-	if strings.TrimSpace(siteURL) == "" {
-		siteURL = GetProtocol(r) + "://" + r.Host
+	//siteURL := a.GetSiteURL()
+	//if strings.TrimSpace(siteURL) == "" {
+	//siteURL := "https://" + r.Host
+	//}
+
+	//redirectURI := siteURL + "/signup/" + service + "/complete"
+
+	//authURL := endpoint + "?response_type=code&client_id=" + clientId + "&redirect_uri=" + url.QueryEscape(redirectURI) + "&state=" + url.QueryEscape(state)
+	authURL := endpoint + "?response_type=code&client_id=" + clientId + "&state=" + url.QueryEscape(state)
+	if (r.Host == "kassie-mm.sakamoto.pl") {
+		authURL += "&redirect_uri=" + url.QueryEscape("https://mm.necode.it/signup/gitlab/completeasdf")
 	}
-
-	redirectURI := siteURL + "/signup/" + service + "/complete"
-
-	authURL := endpoint + "?response_type=code&client_id=" + clientId + "&redirect_uri=" + url.QueryEscape(redirectURI) + "&state=" + url.QueryEscape(state)
 
 	if scope != "" {
 		authURL += "&scope=" + utils.URLEncode(scope)
