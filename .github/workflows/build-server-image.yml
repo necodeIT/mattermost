@@ -32,7 +32,7 @@ jobs:
         uses: docker/build-push-action@v6.7.0
         with:
           provenance: false
-          file: server/build/Dockerfile.buildenv
+          file: server/build/Dockerfile
           push: true
           pull: true
           tags: ghcr.io/${{ env.IMAGE_REPOSITORY }}/mattermost-build-server:${{ steps.go.outputs.GO_VERSION }}
