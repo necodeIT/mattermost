@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - server/build/Dockerfile.buildenv
-      - .github/workflows/build-server-image.yml
 
 jobs:
   build-image:
