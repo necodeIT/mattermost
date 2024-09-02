@@ -9,11 +9,10 @@ ENV PATH="/mattermost/bin:${PATH}"
 # Build Arguments
 ARG PUID=2000
 ARG PGID=2000
-# MM_PACKAGE build arguments controls which version of mattermost to install, defaults to latest stable enterprise
-# i.e. https://releases.mattermost.com/9.7.1/mattermost-9.7.1-linux-amd64.tar.gz
-ARG MM_PACKAGE="https://latest.mattermost.com/mattermost-enterprise-linux"
 
-# # Install needed packages and indirect dependencies
+COPY mattermost-team-linux-amd64.tar.gz /mattermost-team-linux-amd64.tar.gz
+
+# Install needed packages and indirect dependencies
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
   ca-certificates \
@@ -31,7 +30,7 @@ RUN apt-get update \
 RUN mkdir -p /mattermost/data /mattermost/plugins /mattermost/client/plugins \
   && groupadd --gid ${PGID} mattermost \
   && useradd --uid ${PUID} --gid ${PGID} --comment "" --home-dir /mattermost mattermost \
-  && curl -L $MM_PACKAGE | tar -xvz \
+  && tar -xvz -f /mattermost-team-linux-amd64.tar.gz \
   && chown -R mattermost:mattermost /mattermost /mattermost/data /mattermost/plugins /mattermost/client/plugins
 
 # We should refrain from running as privileged user

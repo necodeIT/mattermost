@@ -6,7 +6,41 @@ on:
       - master
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Calculate Go version
+        working-directory: server/
+        id: go
+        run: echo GO_VERSION=$(cat .go-version) >> "$GITHUB_ENV"
+
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          apt install -y build-essential
+
+      - name: Build for Linux
+        working-directory: server/
+        run: |
+          make package-linux
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: mattermost-team-linux-arm64.tar.gz
+          path: server/dist/mattermost-team-linux-arm64.tar.gz
+
   build-image:
+    needs: build
     runs-on: ubuntu-22.04
     steps:
       - name: buildenv/checkout-repo
@@ -16,6 +50,13 @@ jobs:
         working-directory: server/
         id: go
         run: echo GO_VERSION=$(cat .go-version) >> "${GITHUB_OUTPUT}"
+
+      - name: buildenv/download-binaries
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: mattermost-team-linux-arm64.tar.gz
+          path: server/build/
+    
 
       - name: buildenv/docker-login
         uses: docker/login-action@v3.3.0
