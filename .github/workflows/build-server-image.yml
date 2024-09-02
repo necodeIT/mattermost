@@ -25,7 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          apt install -y build-essential
+          sudo apt install -y build-essential
 
       - name: Build for Linux
         working-directory: server/
