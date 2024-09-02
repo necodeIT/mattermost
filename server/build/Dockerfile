@@ -10,7 +10,7 @@ ENV PATH="/mattermost/bin:${PATH}"
 ARG PUID=2000
 ARG PGID=2000
 
-COPY mattermost-team-linux-amd64.tar.gz /mattermost-team-linux-amd64.tar.gz
+COPY mattermost-team-linux-arm64.tar.gz /mattermost-team-linux-arm64.tar.gz
 
 # Install needed packages and indirect dependencies
 RUN apt-get update \
@@ -30,7 +30,7 @@ RUN apt-get update \
 RUN mkdir -p /mattermost/data /mattermost/plugins /mattermost/client/plugins \
   && groupadd --gid ${PGID} mattermost \
   && useradd --uid ${PUID} --gid ${PGID} --comment "" --home-dir /mattermost mattermost \
-  && tar -xvz -f /mattermost-team-linux-amd64.tar.gz \
+  && tar -xvz -f /mattermost-team-linux-arm64.tar.gz \
   && chown -R mattermost:mattermost /mattermost /mattermost/data /mattermost/plugins /mattermost/client/plugins
 
 # We should refrain from running as privileged user
