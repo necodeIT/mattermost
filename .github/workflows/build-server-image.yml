@@ -63,4 +63,4 @@ jobs:
           file: server/build/Dockerfile
           push: true
           pull: true
-          tags: ghcr.io/${{ env.IMAGE_REPOSITORY }}/mattermost-build-server:${{ steps.go.outputs.GO_VERSION }}
+          tags: ghcr.io/${{ env.IMAGE_REPOSITORY }}/mattermost-build-server:latest
