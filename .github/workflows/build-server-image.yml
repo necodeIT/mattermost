@@ -18,7 +18,6 @@ jobs:
         id: go
         run: echo GO_VERSION=$(cat .go-version) >> "$GITHUB_ENV"
 
-
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
@@ -56,7 +55,6 @@ jobs:
         with:
           name: mattermost-team-linux-arm64.tar.gz
           path: server/build/
-    
 
       - name: buildenv/docker-login
         uses: docker/login-action@v3.3.0
