@@ -26,11 +26,13 @@ jobs:
       - name: buildenv/build-client
         working-directory: webapp/
         run: |
+          make clean
           make package
 
       - name: buildenv/build-server
         working-directory: server/
         run: |
+          make clean
           make build-linux
           make package-linux
 
