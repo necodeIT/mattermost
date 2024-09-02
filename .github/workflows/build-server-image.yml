@@ -40,27 +40,10 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: mattermost-team-linux-arm64.tar.gz
-          path: server/dist/mattermost-team-linux-arm64.tar.gz
-
-  build-image:
-    needs: build
-    runs-on: ubuntu-22.04
-    steps:
-      - name: buildenv/checkout-repo
-        uses: actions/checkout@v4.1.7
-
-      - name: buildenv/calculate-golang-version
-        working-directory: server/
-        id: go
-        run: echo GO_VERSION=$(cat .go-version) >> "${GITHUB_OUTPUT}"
-
-      - name: buildenv/download-binaries
-        uses: actions/download-artifact@v4.1.8
-        with:
-          path: server/build/
-      
-      - name: buildenv/unzip-binaries
-        run: unzip server/build/mattermost-team-linux-arm64.tar.gz.zip -d server/build/
+          path: server/dist/mattermost-team-linux-arm64.tar.
+          
+      - name: buildenv/move-binaries
+        run: mv server/dist/mattermost-team-linux-arm64.tar.gz server/build/
 
       - name: buildenv/docker-login
         uses: docker/login-action@v3.3.0
