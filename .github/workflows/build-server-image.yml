@@ -57,7 +57,11 @@ jobs:
       - name: buildenv/download-binaries
         uses: actions/download-artifact@v4.1.8
         with:
+          name: mattermost-team-linux-arm64.tar.gz.zip
           path: server/build/
+      
+      - name: buildenv/unzip-binaries
+        run: unzip server/build/mattermost-team-linux-arm64.tar.gz.zip -d server/build/
 
       - name: buildenv/docker-login
         uses: docker/login-action@v3.3.0
