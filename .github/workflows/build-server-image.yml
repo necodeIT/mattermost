@@ -32,7 +32,7 @@ jobs:
       - name: buildenv/build-server
         working-directory: server/
         run: |
-          make clean
+          make setup-go-work;
           make build-linux
           make package-linux
 
