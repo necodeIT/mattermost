@@ -10,29 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: buildenv/checkout-repo
         uses: actions/checkout@v3
 
-      - name: Calculate Go version
+      - name: buildenv/calculate-golang-version
         working-directory: server/
         id: go
         run: echo GO_VERSION=$(cat .go-version) >> "$GITHUB_ENV"
 
-      - name: Set up Go
+      - name: buildenv/setup-go
         uses: actions/setup-go@v4
         with:
           go-version: ${{ env.GO_VERSION }}
-
-      - name: Install dependencies
+      
+      - name: buildenv/build-client
+        working-directory: webapp/
         run: |
-          sudo apt install -y build-essential
+          make package
 
-      - name: Build for Linux
+      - name: buildenv/build-server
         working-directory: server/
         run: |
           make package-linux
 
-      - name: Upload Artifact
+      - name: buildenv/upload-binaries
         uses: actions/upload-artifact@v3
         with:
           name: mattermost-team-linux-arm64.tar.gz
