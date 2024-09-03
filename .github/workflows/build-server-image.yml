@@ -10,54 +10,56 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: buildenv/checkout-repo
+      - name: checkout-repo
         uses: actions/checkout@v3
 
-      - name: buildenv/calculate-golang-version
+      - name: calculate-golang-version
         working-directory: server/
         id: go
         run: echo GO_VERSION=$(cat .go-version) >> "$GITHUB_ENV"
 
-      - name: buildenv/setup-go
+      - name: update-ubuntu
+        run: sudo apt-get update -y
+
+      - name: setup-go
         uses: actions/setup-go@v4
         with:
           go-version: ${{ env.GO_VERSION }}
       
-      - name: buildenv/build-client
+      - name: build-client
         working-directory: webapp/
         run: |
           make clean
           make package
 
-      - name: buildenv/build-server
+      - name: build-server
         working-directory: server/
         run: |
           make setup-go-work;
           make build-linux
           make package-linux
 
-      - name: buildenv/upload-binaries
+      - name: upload-binaries
         uses: actions/upload-artifact@v3
         with:
           name: mattermost-team-linux-amd64.tar.gz
           path: server/dist/mattermost-team-linux-amd64.tar.gz
           
-      - name: buildenv/move-binaries
+      - name: move-binaries
         run: |
           mv server/dist/mattermost-team-linux-amd64.tar.gz server/build/mattermost-team-linux-amd64.tar.gz
 
-      - name: buildenv/docker-login
+      - name: docker-login
         uses: docker/login-action@v3.3.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - id: read-docker-image-identifiers
-        name: Read Docker Image Identifiers
+      - name: read-docker-image-identifiers
         run: echo "IMAGE_REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
-      - name: buildenv/build-and-push
+      - name: build-and-push
         uses: docker/build-push-action@v6.7.0
         with:
           provenance: false
