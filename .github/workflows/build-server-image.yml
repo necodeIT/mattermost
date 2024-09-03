@@ -43,7 +43,7 @@ jobs:
           path: server/dist/mattermost-team-linux-arm64.tar.
           
       - name: buildenv/move-binaries
-        run: mv server/dist/mattermost-team-linux-arm64.tar.gz server/build/
+        run: mv server/dist/mattermost-team-linux-arm64.tar.gz server/build/mattermost-team-linux-arm64.tar.gz
 
       - name: buildenv/docker-login
         uses: docker/login-action@v3.3.0
