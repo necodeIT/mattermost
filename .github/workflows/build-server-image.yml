@@ -64,6 +64,7 @@ jobs:
         with:
           provenance: false
           context: server/build
+          platforms: linux/amd64
           push: true
           pull: true
           tags: ghcr.io/${{ env.IMAGE_REPOSITORY }}/mattermost-build-server:latest
